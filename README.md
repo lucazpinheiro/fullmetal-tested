@@ -10,7 +10,7 @@ This project is a RESTful API for a TODO list application that allows the user t
 {
     "title": "finish api" // string and required
     "description": ""     // string and optional
-    "status": 'todo'      // string one of the following options: 'todo' || 'doing' || 'done' and required
+    "status": "todo"      // string one of the following options: 'todo' || 'doing' || 'done' and required
     "creationDate": 2021-11-13 // date and required
     "dueDate": 2021-11-13 // date and optional
 }
