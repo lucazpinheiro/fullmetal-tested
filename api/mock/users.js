@@ -16,6 +16,4 @@ const USERS = [
   }
 ]
 
-export default {
-  USERS
-}
+export default USERS

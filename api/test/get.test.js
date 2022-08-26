@@ -2,6 +2,15 @@ import app from '../src/app.js'
 import request from 'supertest'
 
 describe('GET endpoints', () => {
+  describe('GET /status', () => {
+    it('Should respond with json status message', async () => {
+      const response = await request(app).get('/status')
+      expect(response.statusCode).toBe(200)
+      expect(response.headers['content-type']).toMatch(/json/)
+      expect(response.body).toEqual({ status: 'server is up!' })
+    })
+  })
+
   describe('GET /users', () => {
     it('Should respond with an array of users', async () => {
       const EXPECTED_DATA = [
@@ -59,7 +68,7 @@ describe('GET endpoints', () => {
       const response = await request(app).get('/users?postCount=5')
       expect(response.statusCode).toBe(200)
       expect(response.headers['content-type']).toMatch(/json/)
-      expect(response.body.searchedUser).toEqual(EXPECTED_DATA)
+      expect(response.body.users).toEqual(EXPECTED_DATA)
     })
   })
 })
