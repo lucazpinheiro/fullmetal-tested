@@ -12,24 +12,21 @@ describe('GET endpoints', () => {
   })
 
   describe('GET /users', () => {
-    it('Should respond with an array of users', async () => {
-      const EXPECTED_DATA = [
-        {
-          id: '10',
-          name: 'aaa',
-          postCount: 5
-        },
-        {
-          id: '80',
-          name: 'bbb',
-          postCount: 19
-        },
-        {
-          id: '34',
-          name: 'ccc',
-          postCount: 5
-        }
-      ]
+    it('Should respond with an object containing all users', async () => {
+      const EXPECTED_DATA = {
+          '10': {
+            name: 'aaa',
+            postCount: 5
+          },
+          '80': {
+            name: 'bbb',
+            postCount: 19
+          },
+          '34': {
+            name: 'ccc',
+            postCount: 5
+          }
+      }
 
       const response = await request(app).get('/users')
       expect(response.statusCode).toBe(200)
@@ -48,22 +45,21 @@ describe('GET endpoints', () => {
       const response = await request(app).get('/users/10')
       expect(response.statusCode).toBe(200)
       expect(response.headers['content-type']).toMatch(/json/)
-      expect(response.body.searchedUser).toEqual(EXPECTED_DATA)
+      expect(response.body).toEqual(EXPECTED_DATA)
     })
 
     it('Should accept query parameters', async () => {
 
-      const EXPECTED_DATA = [{
-          id: '10',
+      const EXPECTED_DATA = {
+        '10': {
           name: 'aaa',
           postCount: 5
         },
-        {
-          id: '34',
+        '34': {
           name: 'ccc',
           postCount: 5
         }
-      ]
+      }
 
       const response = await request(app).get('/users?postCount=5')
       expect(response.statusCode).toBe(200)

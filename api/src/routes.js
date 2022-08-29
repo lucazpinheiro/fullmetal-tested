@@ -10,23 +10,33 @@ routes.get('/status', (req, res) => {
 })
 routes.get('/users', (req, res) => {
   if (!Object.keys(req.query).length) {
+    const currentUsers = {}
+    for (let [id, user] of USERS) {
+      currentUsers[id] = user
+    }
     res.status(200).json({
-      users: [ ...USERS ]
+      users: currentUsers
     })
     return
   }
   const { postCount } = req.query
+  const matchingUsers = {}
+  for (let [id, user] of USERS) {
+    if (user.postCount === Number(postCount)) {
+      matchingUsers[id] = user
+    }
+  }
   res.status(200).json({
-    users: USERS.filter(user => user.postCount === Number(postCount))
+    users: matchingUsers
   })
 })
 routes.get('/users/:id', (req, res) => {
   const userID = req.params.id
-  const [userByID] = USERS.filter(user => user.id === userID)
+  const searchedUser = USERS.get(userID)
   res.status(200).json({
-    searchedUser: {
-      ...userByID
-    }
+    id: userID,
+    name: searchedUser.name,
+    postCount: searchedUser.postCount
   })
 })
 routes.post('/users', (req, res) => {
@@ -36,13 +46,47 @@ routes.post('/users', (req, res) => {
     })
   }
   const { name } = req.body
-  const newUser = {
-    id: '111',
+  USERS.set('111', {
     name,
     postCount: 0
+  })
+  const newUser = USERS.get('111')
+  res.status(200).json({
+    id: '111',
+    name: newUser.name,
+    postCount: newUser.postCount
+  })
+})
+routes.put('/users/:id', (req, res) => {
+  if (!Object.keys(req.body).length) {
+    res.status(400).json({
+      message: `data was not provided`
+    })
   }
-  USERS.push(newUser)
-  res.status(200).json(newUser)
+  const userID = req.params.id
+  const updatedUser = req.body
+  USERS.set(userID, {
+    name: updatedUser.name,
+    postCount: updatedUser.postCount
+  })
+  res.status(200).json({
+    id: userID,
+    name: USERS.get(userID).name,
+    postCount: USERS.get(userID).postCount
+  })
+})
+routes.delete('/users/:id', (req, res) => {
+  const userID = req.params.id
+  if (!USERS.has(userID)) {
+    res.status(400).json({
+      message: `user didn't exist`
+    })
+  }
+  USERS.delete(userID)
+  res.status(200).json({
+    message: `user successfully deleted`,
+    usersCount: USERS.size
+  })
 })
 
 export default routes
